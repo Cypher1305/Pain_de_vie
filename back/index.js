@@ -3,7 +3,7 @@
 const express = require('express');
 const db = require('./db'); // Importer la connexion à la base de données
 const app = express();
-const cors =requre('cors');
+const cors =require('cors');
 const port = 3100;
 
 app.use(cors()); // Autoriser toutes les origines
@@ -17,7 +17,11 @@ app.get('/verset', (req, res) => {
 
     // Query pour récupérer un verset aléatoire basé sur la graine
     db.query(
-        'SELECT * FROM bible_verses_segond_1910 ORDER BY RAND(?) LIMIT 1',
+        `SELECT b.name AS book_name, v.chapter, v.verse, v.text
+         FROM bible_verses_segond_1910 v
+         JOIN books b ON v.book = b.id
+         ORDER BY RAND(?) 
+         LIMIT 1`,
         [seed],
         (err, result) => {
             if (err) {

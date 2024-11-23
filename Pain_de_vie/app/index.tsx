@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Button, Share } from 'react-native';
+import { View, Text, StyleSheet, Button, Share, TouchableOpacity } from 'react-native';
+import { getVerseOfTheDay } from '@/scripts/versets';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import axios from 'axios';
 
 // Types pour les routes
 type RootStackParamList = {
@@ -12,20 +12,10 @@ type RootStackParamList = {
 // Typage des props du composant
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-const API_URL = 'http://localhost:3100';
 
-export const getVerseOfTheDay = async () => {
-    try {
-        const response = await axios.get(`${API_URL}/verset`);
-        return response.data;
-    } catch (error) {
-        console.error('Erreur lors de la récupération du verset du jour', error);
-        throw error;
-    }
-};
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
-    const [verse, setVerse] = useState<{ text: string; chapter: number; verse: number } | null>(null);
+    const [verse, setVerse] = useState<{ text: string; book_name:string; chapter: number; verse: number } | null>(null);
 
     useEffect(() => {
         const fetchVerse = async () => {
@@ -52,10 +42,20 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         <View style={styles.container}>
             {verse ? (
                 <>
-                    <Text style={styles.verseText}>{verse.text}</Text>
-                    <Text style={styles.verseReference}>{`Chapitre ${verse.chapter}, Verset ${verse.verse}`}</Text>
-                    <Button title="Partager" onPress={shareVerse} />
-                    <Button title="Mes Favoris" onPress={() => navigation.navigate('Favorites')} />
+                    {/* Carte du verset */}
+                    <View style={styles.card}>
+                        <Text style={styles.verseText}>"{verse.text}"</Text>
+                        <Text style={styles.verseReference}>{`${verse.book_name} Chapitre ${verse.chapter}, Verset ${verse.verse}`}</Text>
+                    </View>
+
+                    {/* Boutons d'action */}
+                    <View style={styles.actionsContainer}>
+                        <TouchableOpacity style={styles.shareButton} onPress={shareVerse}>
+                            <Text style={styles.buttonText}>Partager</Text>
+                        </TouchableOpacity>
+                        
+                           
+                    </View>
                 </>
             ) : (
                 <Text>Chargement...</Text>
@@ -67,20 +67,69 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        backgroundColor: '#f8f9fa',
         alignItems: 'center',
+        justifyContent: 'center',
         padding: 20,
     },
+    card: {
+        backgroundColor: '#ffffff',
+        borderRadius: 12,
+        padding: 20,
+        elevation: 4, // Ombre sur Android
+        shadowColor: '#000', // Ombre sur iOS
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        marginBottom: 30,
+        alignItems: 'center',
+        width: 'auto',
+    },
     verseText: {
-        fontSize: 20,
+        fontSize: 18,
+        fontWeight: '600',
         textAlign: 'center',
+        color: '#343a40',
         marginBottom: 10,
     },
     verseReference: {
         fontSize: 16,
         fontStyle: 'italic',
-        marginBottom: 20,
+        color: '#6c757d',
+    },
+    actionsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '80%',
+    },
+    shareButton: {
+        backgroundColor: '#007bff',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 1,
+        marginRight: 10,
+    },
+    favoriteButton: {
+        backgroundColor: '#28a745',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 1,
+        marginLeft: 10,
+    },
+    buttonText: {
+        color: '#ffffff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    loadingText: {
+        fontSize: 18,
+        color: '#6c757d',
     },
 });
-
 export default HomeScreen;

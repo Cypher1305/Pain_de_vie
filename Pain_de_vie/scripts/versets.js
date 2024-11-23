@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3100';
+const API_URL = 'http://192.168.1.5:3100';
 
 export const getVerseOfTheDay = async () => {
     try {
