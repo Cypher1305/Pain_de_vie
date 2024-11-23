@@ -3,7 +3,12 @@
 const express = require('express');
 const db = require('./db'); // Importer la connexion à la base de données
 const app = express();
+const cors =requre('cors');
 const port = 3100;
+
+app.use(cors()); // Autoriser toutes les origines
+app.use(express.json()); // Parse le JSON des requêtes
+
 
 app.get('/verset', (req, res) => {
     // Générer une graine basée sur la date pour garantir qu'un seul verset est sélectionné par jour
@@ -23,6 +28,7 @@ app.get('/verset', (req, res) => {
             }
         }
     );
+    
 });
 
 app.listen(port, () => {
