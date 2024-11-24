@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Button, Share, TouchableOpacity } from 'react-native';
 import { getVerseOfTheDay } from '@/scripts/versets';
+import { requestNotificationPermissions, scheduleDailyNotifications } from '@/scripts/NotificationService';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import * as Notifications from 'expo-notifications';
 
 
 // Types pour les routes
@@ -33,6 +35,24 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         fetchVerse();
     }, []);
 
+    useEffect(() => {
+        const setupNotifications = async () => {
+            try {
+                const hasPermissions = await requestNotificationPermissions();
+                if (hasPermissions && verse) {
+                    const verseReference = `${verse.book_name} ${verse.chapter}:${verse.verse}`;
+                    const scheduleTimes = [12]; // Heures souhaitées
+                    await scheduleDailyNotifications(scheduleTimes, verseReference);
+                }
+            } catch (error) {
+                console.error('Erreur lors de la configuration des notifications :', error);
+            }
+        };
+
+        if (verse) setupNotifications();
+    }, [verse]);
+
+
     const shareVerse = async () => {
         if (verse) {
             await Share.share({
@@ -43,18 +63,18 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     };
 
 
-     /* // Obtenir la date actuelle
-     const today = new Date();
+    /* // Obtenir la date actuelle
+    const today = new Date();
 
-     // Formater la date
-     const formatter = new Intl.DateTimeFormat('fr-FR', {
-         weekday: 'long',  // Jour de la semaine
-         year: 'numeric',  // Année
-         month: 'long',    // Mois (texte complet)
-         day: 'numeric',   // Jour du mois
-     });
+    // Formater la date
+    const formatter = new Intl.DateTimeFormat('fr-FR', {
+        weekday: 'long',  // Jour de la semaine
+        year: 'numeric',  // Année
+        month: 'long',    // Mois (texte complet)
+        day: 'numeric',   // Jour du mois
+    });
  
-     const formattedDate = formatter.format(today);   */
+    const formattedDate = formatter.format(today);   */
 
 
     return (

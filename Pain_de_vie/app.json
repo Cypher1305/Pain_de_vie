@@ -11,6 +11,10 @@
     "ios": {
       "supportsTablet": true
     },
+    "notification": {
+      "icon": "./assets/images/be.png", 
+      "color": "#000814" 
+    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",

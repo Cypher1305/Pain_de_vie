@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import { View, Image, StyleSheet, Text } from 'react-native';
 import 'react-native-reanimated';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 
