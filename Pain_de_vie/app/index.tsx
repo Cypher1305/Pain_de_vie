@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Button, Share, TouchableOpacity } from 'react-native';
 import { getVerseOfTheDay } from '@/scripts/versets';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 // Types pour les routes
 type RootStackParamList = {
@@ -15,7 +17,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
-    const [verse, setVerse] = useState<{ text: string; book_name:string; chapter: number; verse: number } | null>(null);
+
+    const [verse, setVerse] = useState<{ text: string; book_name: string; chapter: number; verse: number } | null>(null);
 
     useEffect(() => {
         const fetchVerse = async () => {
@@ -33,16 +36,33 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     const shareVerse = async () => {
         if (verse) {
             await Share.share({
-                message: `${verse.text} - Chapitre ${verse.chapter}, Verset ${verse.verse}`,
+                message: `*${verse.text}*    - _${verse.book_name}, Chapitre ${verse.chapter}, Verset ${verse.verse}_`,
             });
         }
+
     };
+
+
+     /* // Obtenir la date actuelle
+     const today = new Date();
+
+     // Formater la date
+     const formatter = new Intl.DateTimeFormat('fr-FR', {
+         weekday: 'long',  // Jour de la semaine
+         year: 'numeric',  // Année
+         month: 'long',    // Mois (texte complet)
+         day: 'numeric',   // Jour du mois
+     });
+ 
+     const formattedDate = formatter.format(today);   */
+
 
     return (
         <View style={styles.container}>
             {verse ? (
                 <>
                     {/* Carte du verset */}
+                    {/*<Text>{`${formattedDate}`}</Text>*/}
                     <View style={styles.card}>
                         <Text style={styles.verseText}>"{verse.text}"</Text>
                         <Text style={styles.verseReference}>{`${verse.book_name} Chapitre ${verse.chapter}, Verset ${verse.verse}`}</Text>
@@ -51,10 +71,11 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
                     {/* Boutons d'action */}
                     <View style={styles.actionsContainer}>
                         <TouchableOpacity style={styles.shareButton} onPress={shareVerse}>
-                            <Text style={styles.buttonText}>Partager</Text>
+                            <Icon name="share-alt" size={16} color="#fff" />
+                            <Text style={styles.buttonText}>  Partager</Text>
                         </TouchableOpacity>
-                        
-                           
+
+
                     </View>
                 </>
             ) : (
@@ -93,7 +114,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     verseReference: {
-        fontSize: 16,
+        fontSize: 13,
         fontStyle: 'italic',
         color: '#6c757d',
     },
@@ -103,13 +124,14 @@ const styles = StyleSheet.create({
         width: '80%',
     },
     shareButton: {
-        backgroundColor: '#007bff',
+        backgroundColor: '#000814',
         paddingVertical: 12,
         paddingHorizontal: 20,
         borderRadius: 8,
         alignItems: 'center',
         justifyContent: 'center',
         flex: 1,
+        flexDirection: 'row',
         marginRight: 10,
     },
     favoriteButton: {
